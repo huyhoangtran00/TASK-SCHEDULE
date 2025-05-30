@@ -1,25 +1,56 @@
-version: '3'
+version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "3000:5000"
+      - "7890:7890"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27891/taskmanagement
+      - JWT_SECRET=your_secret_key_here
+      - NODE_ENV=development
+      - PORT=7890
     volumes:
       - ./backend:/app
+      - /app/node_modules
     networks:
       - app-network
+    depends_on:
+      - mongodb
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3456:3456"
+    environment:
+      - VITE_API_URL=http://localhost:7890
+      - PORT=3456
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     networks:
       - app-network
     depends_on:
       - backend
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27891:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+
+volumes:
+  mongodb_data:
 
 networks:
   app-network:
