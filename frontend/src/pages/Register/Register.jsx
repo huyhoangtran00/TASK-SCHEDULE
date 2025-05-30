@@ -22,7 +22,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:45000/api/user/signup', {
+      const response = await fetch('http://backend:3000/api/user/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

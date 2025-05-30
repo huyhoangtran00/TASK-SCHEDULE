@@ -6,6 +6,8 @@ services:
       - "43000:5173"  # host:container
     depends_on:
       - backend
+    networks:
+      - hoang-network
 
   backend:
     build: ./backend
@@ -13,6 +15,8 @@ services:
       - "45000:3000"
     depends_on:
       - db
+    networks:
+      - hoang-network
 
   db:
     image: postgres:15
@@ -24,6 +28,12 @@ services:
       - "45432:5432"  
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hoang-network
+
+networks:
+  hoang-network:
+    driver: bridge
 
 volumes:
   postgres_data:
