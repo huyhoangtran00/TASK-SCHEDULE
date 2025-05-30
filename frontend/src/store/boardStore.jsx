@@ -14,7 +14,7 @@ export const useBoardStore = create((set) => ({
     set({ isLoading: true });
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/boards', {
+      const response = await fetch('http://backend:3000/api/boards', {
         headers: { Authorization: token },
       });
       const data = await response.json();
@@ -32,7 +32,7 @@ export const useBoardStore = create((set) => ({
   set({ isLoading: true });
   try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:3000/api/boards/${id}`, {
+    const response = await fetch(`http://backend:3000/api/boards/${id}`, {
       headers: { Authorization: token },
     });
     const data = await response.json();
@@ -48,7 +48,7 @@ export const useBoardStore = create((set) => ({
     set({ isLoading: true });
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/boards', {
+      const response = await fetch('http://backend:3000/api/boards', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ export const useBoardStore = create((set) => ({
     set({ isLoading: true });
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/boards/${boardId}`, {
+      const response = await fetch(`http://backend:3000/api/boards/${boardId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const useBoardStore = create((set) => ({
     set({ isLoading: true });
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/boards/${boardId}`, {
+      const response = await fetch(`http://backend:3000/api/boards/${boardId}`, {
         method: 'DELETE',
         headers: { Authorization: token },
       });
