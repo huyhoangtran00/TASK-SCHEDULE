@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 
 // Hàm tiện ích để lấy headers có token
@@ -17,7 +16,7 @@ export const useTaskStore = create((set, get) => ({
 
   fetchTasks: async (boardId) => {
     try {
-      const res = await fetch(`http://backend:3000/api/boards/${boardId}/tasks`, {
+      const res = await fetch(`http://localhost:45000/api/boards/${boardId}/tasks`, {
         headers: {
           Authorization: localStorage.getItem('token'),
         }
@@ -36,7 +35,7 @@ export const useTaskStore = create((set, get) => ({
   addTask: async (task) => {
     console.log("Adding task:", task); // Debug log
     try {
-      const res = await fetch('http://backend:3000/api/tasks', {
+      const res = await fetch('http://localhost:45000/api/tasks', {
         method: 'POST',
         headers: getAuthHeader(),
         body: JSON.stringify(task),
@@ -51,7 +50,7 @@ export const useTaskStore = create((set, get) => ({
   // Update task
   updateTask: async (id, updates) => {
     try {
-      const res = await fetch(`http://backend:3000/api/tasks/${id}`, {
+      const res = await fetch(`http://localhost:45000/api/tasks/${id}`, {
         method: 'PUT',
         headers: getAuthHeader(),
         body: JSON.stringify(updates),
@@ -68,7 +67,7 @@ export const useTaskStore = create((set, get) => ({
   // Delete task
   deleteTask: async (id) => {
     try {
-      await fetch(`http://backend:3000/api/tasks/${id}`, {
+      await fetch(`http://localhost:45000/api/tasks/${id}`, {
         method: 'DELETE',
         headers: getAuthHeader(),
       });
