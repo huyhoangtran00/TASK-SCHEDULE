@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 dotenv.config({path: "../.env"}); // Load environment variables from .env file
 
-const jwtSecretKey = process.env.JWT_SECRET_KEY;
+const jwtSecretKey = process.env.JWT_SECRET;
 const tokenHeaderKey = "Authorization";
 
 function authenticateJWT(req, res, next) {
