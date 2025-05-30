@@ -30,7 +30,7 @@ cd task-schedule
 
 2. Chạy ứng dụng với Docker Compose:
 ```bash
-docker-compose up -d
+docker-compose up --build -d 
 ```
 
 3. Truy cập ứng dụng tại: `http://localhost:45000`
@@ -57,7 +57,7 @@ npm run dev
 
 # Terminal 2 - Backend
 cd backend
-npm run dev
+node index.js
 ```
 
 4. Truy cập frontend tại: `http://localhost:5173`
