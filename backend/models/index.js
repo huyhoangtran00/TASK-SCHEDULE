@@ -5,15 +5,17 @@ const TaskModel = require('./Task');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
-  'task_schedule',  // DB_NAME từ docker-compose
-  'postgres',       // DB_USER từ docker-compose
-  '12344321',      // DB_PASSWORD từ docker-compose
+  'task_schedule',
+  'postgres',
+  '12344321',
   {
-    host: 'db',    // tên service của database trong docker-compose
+    host: 'localhost',     // ✅ CHỈ ĐÚNG khi chạy ngoài Docker
+    port: 5432,           // ✅ Cổng ngoài Docker đã publish trong docker-compose
     dialect: 'postgres',
     logging: false,
   }
 );
+
 
 const User = UserModel(sequelize);
 const Board = BoardModel(sequelize);
@@ -27,16 +29,16 @@ Board.belongsTo(User, { foreignKey: 'user_id' });
 Board.hasMany(Task, { foreignKey: 'board_id', onDelete: 'CASCADE' });
 Task.belongsTo(Board, { foreignKey: 'board_id' });
 
-// Đồng bộ database
-sequelize.sync({ alter: true })  // Hoặc { force: true } nếu bạn muốn drop all tables và tạo lại từ đầu
-  .then(() => {
-    console.log('Database synced successfully');
-    process.exit(0);  // Thoát process sau khi đồng bộ xong
-  })
-  .catch((err) => {
-    console.error('Failed to sync database:', err);
-    process.exit(1);  // Thoát với mã lỗi nếu thất bại
-  });
+// // Đồng bộ database
+// sequelize.sync({ alter: true })  // Hoặc { force: true } nếu bạn muốn drop all tables và tạo lại từ đầu
+//   .then(() => {
+//     console.log('Database synced successfully');
+//     process.exit(0);  // Thoát process sau khi đồng bộ xong
+//   })
+//   .catch((err) => {
+//     console.error('Failed to sync database:', err);
+//     process.exit(1);  // Thoát với mã lỗi nếu thất bại
+//   });
 
 module.exports = {
   sequelize,
