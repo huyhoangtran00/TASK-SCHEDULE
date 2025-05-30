@@ -1,13 +1,12 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
 
-EXPOSE 7890
+EXPOSE 3000
 
-CMD ["npm", "start"] 
+ENTRYPOINT ["sh", "-c", "node /model/index.js && node index.js"]
