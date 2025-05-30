@@ -1,9 +1,19 @@
 version: "3.8"
 services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "45000:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - task-network
+
   frontend:
     build: ./frontend
-    ports:
-      - "43000:5173"  # host:container
+    expose:
+      - "5173"
     depends_on:
       - backend
     networks:
@@ -11,8 +21,8 @@ services:
 
   backend:
     build: ./backend
-    ports:
-      - "45000:3000"
+    expose:
+      - "3000"
     depends_on:
       - db
     networks:
@@ -24,8 +34,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12344321
       POSTGRES_DB: task_schedule
-    ports:
-      - "45432:5432"  
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
