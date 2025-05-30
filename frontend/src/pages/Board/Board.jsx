@@ -1,57 +1,113 @@
-// src/pages/Board.jsx
-import React from 'react';
-import TaskCard from '../../components/Task/TaskCard'; // Adjust the import path as necessary
-const tasks = [
-  {
-    title: "Task in Progress",
-    icon: "⏰",
-    color: "bg-yellow-300",
-  },
-  {
-    title: "Task Completed",
-    icon: "🏆",
-    color: "bg-green-300",
-  },
-  {
-    title: "Task Won’t Do",
-    icon: "☕",
-    color: "bg-red-200",
-  },
-  {
-    title: "Task To Do",
-    icon: "📚",
-    color: "bg-blue-100",
-    description: "Work on a Challenge on devChallenges.io, learn TypeScript.",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // 
+import TaskCard from "../../components/Task/TaskCard";
+import TaskDetailModal from "../../components/TaskDetailModal/TaskDetailModal";
+import AddTaskModal from "../../components/AddTaskModal/AddTaskModal";
+import AddNewTaskCard from "../../components/AddNewTaskCard/AddNewTaskCard";
+import { useTaskStore } from "../../store/store";
 
 export default function Board() {
-  return (
-    <div className="max-w-md mx-auto py-10 px-4 font-sans">
-      <h1 className="text-3xl text-black font-bold flex items-center gap-2 mb-1">
-        <span className="text-yellow-500">📚</span> My Task Board <span className="text-lg">✏️</span>
-      </h1>
-      <p className="text-gray-500 mb-6">Tasks to keep organised</p>
+  const {
+    tasks,
+    selectedTask,
+    fetchTasks,
+    selectTask,
+    clearSelectedTask,
+    addTask,
+    updateTask,
+    deleteTask,
+  } = useTaskStore();
 
+
+  const { boardId } = useParams();
+  const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // ✅ Gọi fetchTasks với boardId từ URL
+  useEffect(() => {
+    if (boardId) {
+      fetchTasks(boardId);
+    }
+  }, [boardId]);
+
+  const handleAddClick = () => {
+    clearSelectedTask();
+    setIsEditing(false);
+    setShowModal(true);
+  };
+
+  const handleTaskClick = (task) => {
+    selectTask(task);
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  const handleSave = async (task) => {
+    if (isEditing && selectedTask) {
+      await updateTask(selectedTask.id, task);
+    } else {
+      await addTask({ ...task, board_id : boardId }); // 
+    }
+    setShowModal(false);
+  };
+
+  const handleDelete = async () => {
+    if (selectedTask) {
+      await deleteTask(selectedTask.id);
+    }
+    setShowModal(false);
+  };
+
+return (
+  <div className="min-h-screen w-full bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-4xl mx-auto">
+      {/* Tiêu đề chính */}
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">
+        📚 My Task Board
+      </h1>
+      <p className="text-lg text-gray-600 mb-8">
+        Tasks in board <span className="font-semibold text-blue-600">#{boardId}</span>
+      </p>
+
+      {/* Danh sách task */}
       <div className="flex flex-col gap-4">
-        {tasks.map((task, index) => (
+        {tasks.map((task) => (
           <TaskCard
-            key={index}
-            title={task.title}
+            key={task.id}
+            title={task.name}
             icon={task.icon}
-            color={task.color}
             description={task.description}
+            color={
+              task.status === "In Progress"
+                ? "bg-yellow-300"
+                : task.status === "Completed"
+                ? "bg-green-300"
+                : task.status === "Won't Do"
+                ? "bg-red-200"
+                : "bg-blue-100"
+            }
+            onClick={() => handleTaskClick(task)}
           />
         ))}
-
-        {/* Add New Task */}
-        <div className="flex items-center justify-between bg-yellow-100 rounded-2xl p-4 shadow hover:bg-yellow-200 transition cursor-pointer">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">➕</span>
-            <p className="text-base font-semibold text-gray-800">Add new task</p>
-          </div>
-        </div>
+        <AddNewTaskCard onClick={handleAddClick} />
       </div>
     </div>
-  );
+
+    {/* Modal */}
+    {showModal &&
+      (isEditing ? (
+        <TaskDetailModal
+          task={selectedTask}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          onClose={() => setShowModal(false)}
+        />
+      ) : (
+        <AddTaskModal
+          onSave={handleSave}
+          onClose={() => setShowModal(false)}
+        />
+      ))}
+  </div>
+);
 }

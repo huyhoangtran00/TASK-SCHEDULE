@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
-
+import Home from './pages/Home/Home'
   import Board from './pages/Board/Board'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 function App() {
@@ -14,7 +14,9 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/board" element={<Board />} />
+         <Route path="/home" element={<Home />} />
+        <Route path="/board/:boardId" element={<Board />} />
+
       </Routes>
     </BrowserRouter>
   )

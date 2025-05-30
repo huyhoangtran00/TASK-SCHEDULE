@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 const UserModel = require('./User');
 const BoardModel = require('./Board');
 const TaskModel = require('./Task');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -27,13 +27,13 @@ Board.belongsTo(User, { foreignKey: 'user_id' });
 Board.hasMany(Task, { foreignKey: 'board_id', onDelete: 'CASCADE' });
 Task.belongsTo(Board, { foreignKey: 'board_id' });
 
-sequelize.sync({ alter: true })  // Hoặc { force: true } nếu bạn muốn drop all tables và tạo lại từ đầu
-  .then(() => {
-    console.log(' Database synced successfully');
-  })
-  .catch((err) => {
-    console.error('Failed to sync database:', err);
-  });
+// sequelize.sync({ alter: true })  // Hoặc { force: true } nếu bạn muốn drop all tables và tạo lại từ đầu
+//   .then(() => {
+//     console.log(' Database synced successfully');
+//   })
+//   .catch((err) => {
+//     console.error('Failed to sync database:', err);
+//   });
 
 module.exports = {
   sequelize,

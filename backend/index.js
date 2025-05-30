@@ -4,14 +4,16 @@ const port = process.env.PORT || 3000;
 
 
 const app = express();
-const homeRoute = require('./routes/home');
 
 const userRoutes = require('./routes/user');
 const boardRoutes = require('./routes/board');
 const taskRoutes = require('./routes/task');
 const authRoutes = require('./routes/auth');
+const setupSwagger = require('./swagger');
+
 const cors = require('cors');
 
+setupSwagger(app);
 
 app.use(cors({
   origin: '*', // Allow all origins for development; adjust as needed for production
