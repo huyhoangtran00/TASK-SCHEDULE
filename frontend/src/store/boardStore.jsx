@@ -14,13 +14,17 @@ export const useBoardStore = create((set) => ({
     set({ isLoading: true });
     try {
       const token = localStorage.getItem('token');
+      console.log('Fetching boards with token:', token);
       const response = await fetch('http://backend:3000/api/boards', {
         headers: { Authorization: token },
       });
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
       if (!response.ok) throw new Error(data.message);
       set({ boards: data, error: null });
     } catch (error) {
+      console.error('Error fetching boards:', error);
       set({ error: error.message });
     } finally {
       set({ isLoading: false });

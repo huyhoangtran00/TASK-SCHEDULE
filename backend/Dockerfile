@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3000
 
-ENTRYPOINT ["sh", "-c", "node /model/index.js && node index.js"]
+CMD ["node", "index.js"]
