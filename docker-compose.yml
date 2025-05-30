@@ -39,27 +39,28 @@ services:
       - task-network
     environment:
       - DB_HOST=db
-      - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-12344321}
-      - DB_NAME=${DB_NAME:-task_schedule}
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=12344321
+      - DB_NAME=task_schedule
       - NODE_ENV=production
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    restart: unless-stopped
 
   db:
     image: postgres:15
     environment:
-      - POSTGRES_USER=${DB_USER:-postgres}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-12344321}
-      - POSTGRES_DB=${DB_NAME:-task_schedule}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12344321
+      - POSTGRES_DB=task_schedule
     expose:
       - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - task-network
     logging:
@@ -67,6 +68,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    restart: unless-stopped
 
 networks:
   task-network:
