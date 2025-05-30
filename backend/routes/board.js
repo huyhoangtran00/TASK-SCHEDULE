@@ -118,7 +118,6 @@ router.get('/:id', async (req, res) => {
   const board = await Board.findOne({
     where: {
       id: req.params.id,
-      user_id: req.user.id,
     },
   });
   if (!board) return res.status(404).json({ error: 'Board not found or unauthorized' });

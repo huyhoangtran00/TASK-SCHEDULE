@@ -1,89 +1,94 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaUser, FaLock } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [serverError, setServerError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setServerError('');
 
     try {
       const response = await fetch('http://localhost:3000/api/user/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        alert('Đăng nhập thành công!');
-        localStorage.setItem('token', data.token);
-        navigate('/board');
-      } else {
-        setServerError(data.message || 'Đăng nhập thất bại');
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
       }
-    } catch (error) {
-      setServerError('Lỗi kết nối đến server');
-    }
 
-    setLoading(false);
+      localStorage.setItem('token', data.token); // ✅ lưu token thật
+      alert('Login successful!');
+      navigate('/');
+    } catch (error) {
+      console.error('Login failed:', error.message);
+      alert(`Login failed: ${error.message}`);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-300 px-4">
-      <div className="w-full max-w-sm bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-        <h2 className="text-3xl font-bold text-center text-blue-700 mb-2">Đăng nhập</h2>
-        <p className="text-sm text-center text-gray-600 mb-4">Nhập thông tin tài khoản để tiếp tục</p>
-
-        {serverError && <p className="text-red-500 text-center text-sm mb-4">{serverError}</p>}
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="relative">
-            <FaUser className="absolute top-3 left-3 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Username"
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-white flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
+        <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">Đăng nhập</h1>
+        <p className="text-gray-600 text-center mb-8">Nhập thông tin tài khoản để tiếp tục</p>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <div className="relative">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors pl-10"
+                placeholder="Username"
+                required
+              />
+              <div className="absolute left-3 top-3.5 text-gray-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+            </div>
           </div>
 
-          <div className="relative">
-            <FaLock className="absolute top-3 left-3 text-gray-400" />
-            <input
-              type="password"
-              placeholder="Password"
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <div>
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors pl-10"
+                placeholder="Password"
+                required
+              />
+              <div className="absolute left-3 top-3.5 text-gray-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition active:scale-95"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors"
           >
-            {loading ? 'Đang xử lý...' : 'Đăng nhập'}
+            Đăng nhập
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-600">
+        <p className="mt-6 text-center text-gray-600">
           Chưa có tài khoản?{' '}
-          <a href="/register" className="text-blue-600 hover:underline font-medium">
+          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
             Đăng ký ngay
-          </a>
+          </Link>
         </p>
       </div>
     </div>
